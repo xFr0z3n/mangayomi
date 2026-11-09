@@ -1,4 +1,4 @@
-import 'package:mangayomi/eval/javascript/http.dart';
+import 'package:mangayomi/eval/http_response_extensions.dart';
 
 class FilterList {
   List<dynamic> filters;
@@ -283,4 +283,36 @@ List<Map<String, dynamic>?> filterValuesListToJson(List<dynamic> values) {
     }
     return (e.toJson() as Map<String, dynamic>?);
   }).toList();
+}
+
+/// Picks [genre] in [filters], in a group of checkboxes or tri-states or among
+/// the options of a list, ignoring case. Says whether a filter has that name.
+bool selectGenreFilter(List<dynamic> filters, String genre) {
+  final name = genre.trim().toLowerCase();
+  if (name.isEmpty) return false;
+  bool isGenre(String filterName) => filterName.trim().toLowerCase() == name;
+
+  for (final filter in filters) {
+    if (filter is GroupFilter) {
+      for (final entry in filter.state) {
+        if (entry is CheckBoxFilter && isGenre(entry.name)) {
+          entry.state = true;
+          return true;
+        }
+        if (entry is TriStateFilter && isGenre(entry.name)) {
+          entry.state = 1;
+          return true;
+        }
+      }
+    } else if (filter is SelectFilter) {
+      final index = filter.values.indexWhere(
+        (option) => option is SelectFilterOption && isGenre(option.name),
+      );
+      if (index != -1) {
+        filter.state = index;
+        return true;
+      }
+    }
+  }
+  return false;
 }

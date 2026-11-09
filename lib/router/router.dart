@@ -1,14 +1,19 @@
+import 'package:mangayomi/modules/more/settings/keyboard_shortcuts/keyboard_shortcuts_screen.dart';
 import 'package:mangayomi/utils/platform_utils.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shiori/shiori.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mangayomi/modules/main_view/nav_groups.dart';
 import 'package:mangayomi/models/manga.dart';
 import 'package:mangayomi/models/settings.dart';
 import 'package:mangayomi/models/source.dart';
 import 'package:mangayomi/models/track.dart';
 import 'package:mangayomi/models/track_preference.dart';
 import 'package:mangayomi/models/track_search.dart';
+import 'package:mangayomi/services/discovery/media_lookup_context.dart';
 import 'package:mangayomi/modules/anime/anime_player_view.dart';
 import 'package:mangayomi/modules/browse/extension/edit_code.dart';
 import 'package:mangayomi/modules/browse/extension/extension_detail.dart';
@@ -18,6 +23,7 @@ import 'package:mangayomi/modules/calendar/calendar_screen.dart';
 import 'package:mangayomi/modules/manga/detail/widgets/migrate_screen.dart';
 import 'package:mangayomi/modules/mass_migration/mass_migration_source_selection_screen.dart';
 import 'package:mangayomi/modules/manga/detail/widgets/recommendation_screen.dart';
+import 'package:mangayomi/modules/manga/detail/widgets/related_screen.dart';
 import 'package:mangayomi/modules/manga/detail/widgets/watch_order_screen.dart';
 import 'package:mangayomi/modules/more/data_and_storage/create_backup.dart';
 import 'package:mangayomi/modules/more/data_and_storage/data_and_storage.dart';
@@ -28,7 +34,7 @@ import 'package:mangayomi/modules/more/settings/player/player_advanced_screen.da
 import 'package:mangayomi/modules/more/settings/player/player_audio_screen.dart';
 import 'package:mangayomi/modules/more/settings/player/player_decoder_screen.dart';
 import 'package:mangayomi/modules/more/settings/player/player_overview_screen.dart';
-import 'package:mangayomi/modules/more/settings/reader/providers/reader_state_provider.dart';
+import 'package:mangayomi/providers/reader_state_provider.dart';
 import 'package:mangayomi/modules/more/statistics/statistics_screen.dart';
 import 'package:mangayomi/modules/novel/novel_reader_view.dart';
 import 'package:mangayomi/modules/tracker_library/tracker_library_screen.dart';
@@ -51,31 +57,47 @@ import 'package:mangayomi/modules/manga/detail/manga_detail_main.dart';
 import 'package:mangayomi/modules/manga/home/manga_home_screen.dart';
 import 'package:mangayomi/modules/manga/reader/reader_view.dart';
 import 'package:mangayomi/modules/more/about/about_screen.dart';
+import 'package:mangayomi/modules/more/about/error_reports_screen.dart';
+import 'package:mangayomi/modules/more/about/licenses_screen.dart';
 import 'package:mangayomi/modules/more/download_queue/download_queue_screen.dart';
 import 'package:mangayomi/modules/more/more_screen.dart';
 import 'package:mangayomi/modules/more/settings/appearance/appearance_screen.dart';
 import 'package:mangayomi/modules/more/settings/browse/browse_screen.dart';
 import 'package:mangayomi/modules/more/settings/browse/extension_server_screen.dart';
 import 'package:mangayomi/modules/more/settings/general/general_screen.dart';
+import 'package:mangayomi/modules/more/settings/reader/novel_reader_screen.dart';
 import 'package:mangayomi/modules/more/settings/reader/reader_screen.dart';
 import 'package:mangayomi/modules/more/settings/settings_screen.dart';
 import 'package:mangayomi/modules/more/settings/security/security_screen.dart';
+import 'package:mangayomi/core/navigation/app_navigator.dart';
+import 'package:mangayomi/router/missing_extra_page.dart';
+import 'package:mangayomi/services/crash_route_observer.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:flutter/cupertino.dart';
+export 'package:mangayomi/core/navigation/app_navigator.dart' show navigatorKey;
 part 'router.g.dart';
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+/// The routes of the shell's branches, in the order they are declared below.
+const _shellBranchRoutes = [
+  '/MangaLibrary',
+  '/AnimeLibrary',
+  '/NovelLibrary',
+  '/trackerLibrary',
+  '/history',
+  '/updates',
+  '/browse',
+  '/more',
+];
+
 @riverpod
 GoRouter router(Ref ref) {
   final router = RouterNotifier();
-  final hiddenItems = ref.read(hideItemsStateProvider);
-  final initLocation = ref
-      .watch(navigationOrderStateProvider)
-      .where((e) => !hiddenItems.contains(e))
-      .first;
+  final initLocation = homeLocation(
+    ref.read(navigationOrderStateProvider),
+    ref.read(hideItemsStateProvider),
+  );
 
   return GoRouter(
-    observers: [BotToastNavigatorObserver()],
+    observers: [BotToastNavigatorObserver(), CrashRouteObserver()],
     initialLocation: initLocation,
     debugLogDiagnostics: kDebugMode,
     refreshListenable: router,
@@ -84,6 +106,11 @@ GoRouter router(Ref ref) {
     onException: (context, state, router) => router.go(initLocation),
   );
 }
+
+/// Where the app opens: the first destination of the navigation bar that is
+/// not hidden.
+String homeLocation(List<String> order, List<String> hidden) =>
+    order.firstWhere((e) => !hidden.contains(e), orElse: () => '/more');
 
 @riverpod
 class RouterCurrentLocationState extends _$RouterCurrentLocationState {
@@ -124,37 +151,86 @@ class RouterCurrentLocationState extends _$RouterCurrentLocationState {
 
 class RouterNotifier extends ChangeNotifier {
   List<RouteBase> get _routes => [
-    ShellRoute(
-      builder: (context, state, child) => MainScreen(child: child),
-      routes: [
-        _genericRoute<String?>(
-          name: "MangaLibrary",
-          builder: (id) =>
-              LibraryScreen(itemType: ItemType.manga, presetInput: id),
+    // Each tab lives in its own StatefulShellBranch so switching tabs keeps
+    // the other screens mounted (scroll position, queries, images preserved).
+    //
+    // Except on a television, where that retention is not affordable. Measured
+    // on a Fire TV: every branch left mounted holds roughly 14 MB of GPU
+    // surfaces, three tabs took Graphics from 27 MB to 69 MB, and the box has
+    // around 300 MB free with most of its swap already spent. Off TV the
+    // trade is the other way round and IndexedStack stays.
+    StatefulShellRoute(
+      // A page of its own, so the shell recedes under a page pushed over it
+      // as any page does.
+      pageBuilder: (context, state, navigationShell) => transitionPage(
+        key: state.pageKey,
+        child: MainScreen(child: navigationShell),
+      ),
+      navigatorContainerBuilder: (context, navigationShell, children) {
+        assert(
+          children.length == _shellBranchRoutes.length,
+          '_shellBranchRoutes must list every branch, in order',
+        );
+        return isTv
+            ? children[navigationShell.currentIndex]
+            // Switched with Material's fade through, switches its
+            // tabs; every tab stays mounted.
+            : ShioriFadeThroughStack(
+                index: navigationShell.currentIndex,
+                // Between two members of a group (Manga, Anime and Novels in
+                // Library), the tab slides along the switcher's row.
+                slideDirection: (from, to) => navGroupDirection(
+                  _shellBranchRoutes[from],
+                  _shellBranchRoutes[to],
+                  ProviderScope.containerOf(
+                    context,
+                    listen: false,
+                  ).read(visibleNavDestinationsProvider),
+                ),
+                children: children,
+              );
+      },
+      branches: [
+        _branch(
+          _genericRoute<LibrarySearch?>(
+            name: "MangaLibrary",
+            builder: (search) =>
+                LibraryScreen(itemType: ItemType.manga, search: search),
+          ),
         ),
-        _genericRoute<String?>(
-          name: "AnimeLibrary",
-          builder: (id) =>
-              LibraryScreen(itemType: ItemType.anime, presetInput: id),
+        _branch(
+          _genericRoute<LibrarySearch?>(
+            name: "AnimeLibrary",
+            builder: (search) =>
+                LibraryScreen(itemType: ItemType.anime, search: search),
+          ),
         ),
-        _genericRoute<String?>(
-          name: "NovelLibrary",
-          builder: (id) =>
-              LibraryScreen(itemType: ItemType.novel, presetInput: id),
+        _branch(
+          _genericRoute<LibrarySearch?>(
+            name: "NovelLibrary",
+            builder: (search) =>
+                LibraryScreen(itemType: ItemType.novel, search: search),
+          ),
         ),
-        _genericRoute<String?>(
-          name: "trackerLibrary",
-          builder: (id) => TrackerLibraryScreen(presetInput: id),
+        _branch(
+          _genericRoute<String?>(
+            name: "trackerLibrary",
+            builder: (id) => TrackerLibraryScreen(presetInput: id),
+          ),
         ),
-        _genericRoute(name: "history", child: const HistoryScreen()),
-        _genericRoute(name: "updates", child: const UpdatesScreen()),
-        _genericRoute(name: "browse", child: const BrowseScreen()),
-        _genericRoute(name: "more", child: const MoreScreen()),
+        _branch(_genericRoute(name: "history", child: const HistoryScreen())),
+        _branch(_genericRoute(name: "updates", child: const UpdatesScreen())),
+        _branch(_genericRoute(name: "browse", child: const BrowseScreen())),
+        _branch(_genericRoute(name: "more", child: const MoreScreen())),
       ],
     ),
     _genericRoute<(Source?, bool)>(
       name: "mangaHome",
       builder: (id) => MangaHomeScreen(source: id.$1!, isLatest: id.$2),
+    ),
+    _genericRoute<(Source?, String)>(
+      name: "mangaHomeGenre",
+      builder: (id) => MangaHomeScreen(source: id.$1!, genre: id.$2),
     ),
     _genericRoute<int>(
       path: "/manga-reader/detail",
@@ -162,15 +238,20 @@ class RouterNotifier extends ChangeNotifier {
     ),
     _genericRoute<int>(
       name: "mangaReaderView",
-      builder: (id) => MangaReaderView(chapterId: id),
+      // Keyed by chapter id so a chapter-to-chapter pushReplacement fully
+      // remounts instead of reusing the Element and going stale.
+      builder: (id) =>
+          MangaReaderView(key: ValueKey('mangaReader-$id'), chapterId: id),
     ),
     _genericRoute<int>(
       name: "animePlayerView",
-      builder: (id) => AnimePlayerView(episodeId: id),
+      builder: (id) =>
+          AnimePlayerView(key: ValueKey('animePlayer-$id'), episodeId: id),
     ),
     _genericRoute<int>(
       name: "novelReaderView",
-      builder: (id) => NovelReaderView(chapterId: id),
+      builder: (id) =>
+          NovelReaderView(key: ValueKey('novelReader-$id'), chapterId: id),
     ),
     _genericRoute<ItemType>(
       name: "ExtensionLang",
@@ -187,6 +268,8 @@ class RouterNotifier extends ChangeNotifier {
       builder: (data) => GlobalSearchScreen(search: data.$1, itemType: data.$2),
     ),
     _genericRoute(name: "about", child: const AboutScreen()),
+    _genericRoute(name: "errorReports", child: const ErrorReportsScreen()),
+    _genericRoute(name: "openSourceLicenses", child: const LicensesScreen()),
     _genericRoute(name: "track", child: const TrackScreen()),
     _genericRoute(name: "sync", child: const SyncScreen()),
     _genericRoute<ItemType>(
@@ -205,6 +288,12 @@ class RouterNotifier extends ChangeNotifier {
     _genericRoute(name: "statistics", child: const StatisticsScreen()),
     _genericRoute(name: "general", child: const GeneralScreen()),
     _genericRoute(name: "readerMode", child: const ReaderScreen()),
+    _genericRoute<int>(
+      name: "readerSettingsSection",
+      builder: (index) =>
+          ReaderScreen(section: ReaderSettingsSection.values[index]),
+    ),
+    _genericRoute(name: "novelReaderMode", child: const NovelReaderScreen()),
     _genericRoute(name: "browseS", child: const BrowseSScreen()),
     _genericRoute(
       name: "extensionServer",
@@ -224,11 +313,18 @@ class RouterNotifier extends ChangeNotifier {
     ),
     _genericRoute(name: "playerOverview", child: const PlayerOverviewScreen()),
     _genericRoute(name: "playerMode", child: const PlayerScreen()),
+    _genericRoute(
+      name: "keyboardShortcuts",
+      child: const KeyboardShortcutsScreen(),
+    ),
     _genericRoute<int>(
       name: "codeEditor",
       builder: (sourceId) => CodeEditorPage(sourceId: sourceId),
     ),
-    _genericRoute(name: "createExtension", child: const CreateExtension()),
+    _genericRoute<Source?>(
+      name: "createExtension",
+      builder: (source) => CreateExtension(editSource: source),
+    ),
     _genericRoute(name: "createBackup", child: const CreateBackup()),
     _genericRoute(
       name: "customNavigationSettings",
@@ -255,30 +351,46 @@ class RouterNotifier extends ChangeNotifier {
       name: "migrate",
       builder: (manga) => MigrationScreen(manga: manga),
     ),
-    _genericRoute<(ItemType, Manga?)>(
+    _genericRoute<dynamic>(
       name: "massMigration",
-      builder: (data) => MassMigrationSourceSelectionScreen(
-        itemType: data.$1,
-        prioritizedManga: data.$2,
-      ),
+      builder: (data) {
+        if (data is (ItemType, Manga?, List<Manga>?)) {
+          return MassMigrationSourceSelectionScreen(
+            itemType: data.$1,
+            prioritizedManga: data.$2,
+            selectedMangas: data.$3,
+          );
+        }
+        if (data is (ItemType, Manga?)) {
+          return MassMigrationSourceSelectionScreen(
+            itemType: data.$1,
+            prioritizedManga: data.$2,
+          );
+        }
+        return MassMigrationSourceSelectionScreen(itemType: data as ItemType);
+      },
     ),
     _genericRoute<(Manga, TrackSearch)>(
       name: "migrate/tracker",
       builder: (data) => MigrationScreen(manga: data.$1, trackSearch: data.$2),
     ),
-    _genericRoute<(String, ItemType, AlgorithmWeights)>(
-      name: "recommendations",
-      builder: (data) => RecommendationScreen(
-        name: data.$1,
-        itemType: data.$2,
-        algorithmWeights: data.$3,
-      ),
+    _genericRoute<(String, ItemType)>(
+      name: "related",
+      builder: (data) => RelatedScreen(name: data.$1, itemType: data.$2),
     ),
-    _genericRoute<(String, Track?)>(
+    _genericRoute<(MediaLookupContext, AlgorithmWeights)>(
+      name: "recommendations",
+      builder: (data) =>
+          RecommendationScreen(media: data.$1, algorithmWeights: data.$2),
+    ),
+    _genericRoute<(MediaLookupContext, Track?)>(
       name: "watchOrder",
-      builder: (data) => WatchOrderScreen(name: data.$1, track: data.$2),
+      builder: (data) => WatchOrderScreen(media: data.$1, track: data.$2),
     ),
   ];
+
+  StatefulShellBranch _branch(GoRoute route) =>
+      StatefulShellBranch(routes: [route]);
 
   GoRoute _genericRoute<T>({
     String? name,
@@ -289,32 +401,42 @@ class RouterNotifier extends ChangeNotifier {
     return GoRoute(
       path: path ?? (name != null ? "/$name" : "/"),
       name: name,
-      builder: (context, state) {
-        if (builder != null) {
-          final id = state.extra as T;
-          return builder(id);
-        } else {
-          return child!;
-        }
-      },
-      pageBuilder: isApple
-          ? (context, state) {
-              final pageChild = builder != null
-                  ? builder(state.extra as T)
-                  : child!;
-              return transitionPage(key: state.pageKey, child: pageChild);
-            }
-          : null,
+      // Explicit, not left to go_router: without a page builder it looks for
+      // a MaterialApp above it, does not find this app's, and falls back to
+      // a page with no transition, so every page outside Apple appeared at
+      // once.
+      pageBuilder: (context, state) => transitionPage(
+        key: state.pageKey,
+        child: builder == null
+            ? child!
+            : routeChild<T>(
+                route: name ?? path ?? '/',
+                builder: builder,
+                extra: state.extra,
+              ),
+      ),
     );
   }
 }
 
+/// The page of a route that shows [extra] as a [T], or [MissingExtraPage]
+/// when it got something else: go_router can rebuild a page it has lost the
+/// extra of, and the cast used to crash there (#997).
+Widget routeChild<T>({
+  required String route,
+  required Widget Function(T extra) builder,
+  required Object? extra,
+}) => extra is T
+    ? builder(extra)
+    : MissingExtraPage(route: route, expected: T, extra: extra);
+
+/// A page that moves as the theme says: Shiori's page transition (Mihon's
+/// shared axis) everywhere but Apple, which keeps Cupertino's and its edge
+/// swipe back. A MaterialPage and a MaterialPageRoute both follow it.
 Page transitionPage({required LocalKey key, required child}) {
-  return CupertinoPage(key: key, child: child);
+  return MaterialPage(key: key, child: child);
 }
 
 Route createRoute({required Widget page}) {
-  return isApple
-      ? CupertinoPageRoute(builder: (context) => page)
-      : MaterialPageRoute(builder: (context) => page);
+  return MaterialPageRoute(builder: (context) => page);
 }

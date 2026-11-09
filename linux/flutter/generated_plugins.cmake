@@ -3,9 +3,10 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  app_links_linux
   desktop_webview_window
   flutter_qjs
-  gtk
+  flutter_secure_storage_linux
   isar_community_flutter_libs
   m_extension_server
   media_kit_libs_linux

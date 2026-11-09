@@ -59,7 +59,7 @@ final class AnimeStreamControllerProvider
 }
 
 String _$animeStreamControllerHash() =>
-    r'8bb6a7346f0b51b1d7807cf56728bbbaba05c4bc';
+    r'cda99f0e0d2d8508e97c493ab6e4b310c973cac2';
 
 final class AnimeStreamControllerFamily extends $Family
     with
@@ -93,7 +93,7 @@ abstract class _$AnimeStreamController extends $Notifier<KeepAliveLink> {
   KeepAliveLink build({required Chapter episode});
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<KeepAliveLink, KeepAliveLink>;
     final element =
         ref.element
@@ -103,6 +103,6 @@ abstract class _$AnimeStreamController extends $Notifier<KeepAliveLink> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(episode: _$args));
+    return element.handleCreate(ref, () => build(episode: _$args));
   }
 }
