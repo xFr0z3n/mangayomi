@@ -42,13 +42,13 @@ final class DefaultSubtitleLangStateProvider
 }
 
 String _$defaultSubtitleLangStateHash() =>
-    r'ae7b275e168dd15117512d9ed1c474736458753b';
+    r'005aa9daa9d41807fa2d4af830c3bb6c8b376604';
 
 abstract class _$DefaultSubtitleLangState extends $Notifier<Locale> {
   Locale build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<Locale, Locale>;
     final element =
         ref.element
@@ -58,7 +58,7 @@ abstract class _$DefaultSubtitleLangState extends $Notifier<Locale> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -96,13 +96,13 @@ final class MarkEpisodeAsSeenTypeStateProvider
 }
 
 String _$markEpisodeAsSeenTypeStateHash() =>
-    r'd25a31a8c5bf99ab6466023ef996613f98357c8c';
+    r'7dbaabced494aa2ecae1e6a0b4a166b978f9fda7';
 
 abstract class _$MarkEpisodeAsSeenTypeState extends $Notifier<int> {
   int build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -112,7 +112,7 @@ abstract class _$MarkEpisodeAsSeenTypeState extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -150,13 +150,13 @@ final class DefaultSkipIntroLengthStateProvider
 }
 
 String _$defaultSkipIntroLengthStateHash() =>
-    r'cd673c1c8c1d6400caa02c8f7751615c223ca4e3';
+    r'ea422481058a8bd9d98da1090d95df0b774db159';
 
 abstract class _$DefaultSkipIntroLengthState extends $Notifier<int> {
   int build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -166,7 +166,7 @@ abstract class _$DefaultSkipIntroLengthState extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -206,13 +206,13 @@ final class DefaultDoubleTapToSkipLengthStateProvider
 }
 
 String _$defaultDoubleTapToSkipLengthStateHash() =>
-    r'f550eb96cbf5110fdfc18848dd8049653e369459';
+    r'0c3ab08f1f07d6e7d711691d195690d99e78bd30';
 
 abstract class _$DefaultDoubleTapToSkipLengthState extends $Notifier<int> {
   int build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -222,7 +222,7 @@ abstract class _$DefaultDoubleTapToSkipLengthState extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -259,13 +259,13 @@ final class DefaultPlayBackSpeedStateProvider
 }
 
 String _$defaultPlayBackSpeedStateHash() =>
-    r'f9c19deb880028f6be06dcb57d4c75abaef48964';
+    r'e3a13baa73c698630043e85ea2c724dbd6ac7601';
 
 abstract class _$DefaultPlayBackSpeedState extends $Notifier<double> {
   double build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<double, double>;
     final element =
         ref.element
@@ -275,7 +275,7 @@ abstract class _$DefaultPlayBackSpeedState extends $Notifier<double> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -312,13 +312,13 @@ final class FullScreenPlayerStateProvider
 }
 
 String _$fullScreenPlayerStateHash() =>
-    r'8f10fe73e899e05c9e1355f3e628be3593f1c2a6';
+    r'4186d10e5a3e1379533e2088c7ebabc1fd28663d';
 
 abstract class _$FullScreenPlayerState extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -328,7 +328,7 @@ abstract class _$FullScreenPlayerState extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -365,13 +365,13 @@ final class EnableAniSkipStateProvider
 }
 
 String _$enableAniSkipStateHash() =>
-    r'103d41d30889391851d2eef85ccce7d4f0baf27d';
+    r'bf94db4c311e27192c0f05938032a7b18dd3a4b5';
 
 abstract class _$EnableAniSkipState extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -381,7 +381,7 @@ abstract class _$EnableAniSkipState extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -418,13 +418,13 @@ final class EnableAutoSkipStateProvider
 }
 
 String _$enableAutoSkipStateHash() =>
-    r'e5880ae4f88cbcf6be1e4b252aea11425d8b78fc';
+    r'e9680772c27972ab498294ba57c9f1595ab73897';
 
 abstract class _$EnableAutoSkipState extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -434,7 +434,7 @@ abstract class _$EnableAutoSkipState extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -471,13 +471,13 @@ final class AniSkipTimeoutLengthStateProvider
 }
 
 String _$aniSkipTimeoutLengthStateHash() =>
-    r'2e13a6e7f53bc29c0b35107af18337fcaf79867f';
+    r'c6aa5adfdc61d1ecfb0bb9380616c0bbac443142';
 
 abstract class _$AniSkipTimeoutLengthState extends $Notifier<int> {
   int build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -487,7 +487,7 @@ abstract class _$AniSkipTimeoutLengthState extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -523,13 +523,13 @@ final class UseLibassStateProvider
   }
 }
 
-String _$useLibassStateHash() => r'aa8024f8b754117dfe80594f85155b05311a3152';
+String _$useLibassStateHash() => r'6e10876409fe39ac8aeeb60a14ebf1ab090c7dda';
 
 abstract class _$UseLibassState extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -539,7 +539,7 @@ abstract class _$UseLibassState extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -575,13 +575,13 @@ final class UseMpvConfigStateProvider
   }
 }
 
-String _$useMpvConfigStateHash() => r'f91e6a7dbd3c5f7674ba74842521ecfca01c78b0';
+String _$useMpvConfigStateHash() => r'cb01b1c181ff318e0d5ddd6e7d9e0c3dde78f3d0';
 
 abstract class _$UseMpvConfigState extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -591,7 +591,7 @@ abstract class _$UseMpvConfigState extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -628,13 +628,13 @@ final class ForceLandscapePlayerStateProvider
 }
 
 String _$forceLandscapePlayerStateHash() =>
-    r'65d3e0b91d7b6d38e9f70893a8c71f13029715b5';
+    r'aa7c06ed0c25ff0ffa6a9c44806ef51db885cabd';
 
 abstract class _$ForceLandscapePlayerState extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -644,6 +644,231 @@ abstract class _$ForceLandscapePlayerState extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(RememberPlayerVolumeState)
+final rememberPlayerVolumeStateProvider = RememberPlayerVolumeStateProvider._();
+
+final class RememberPlayerVolumeStateProvider
+    extends $NotifierProvider<RememberPlayerVolumeState, bool> {
+  RememberPlayerVolumeStateProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'rememberPlayerVolumeStateProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$rememberPlayerVolumeStateHash();
+
+  @$internal
+  @override
+  RememberPlayerVolumeState create() => RememberPlayerVolumeState();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$rememberPlayerVolumeStateHash() =>
+    r'fe1df6d68850577abff8fcb6958c6783595c4669';
+
+abstract class _$RememberPlayerVolumeState extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(RememberPlayerBrightnessState)
+final rememberPlayerBrightnessStateProvider =
+    RememberPlayerBrightnessStateProvider._();
+
+final class RememberPlayerBrightnessStateProvider
+    extends $NotifierProvider<RememberPlayerBrightnessState, bool> {
+  RememberPlayerBrightnessStateProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'rememberPlayerBrightnessStateProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$rememberPlayerBrightnessStateHash();
+
+  @$internal
+  @override
+  RememberPlayerBrightnessState create() => RememberPlayerBrightnessState();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$rememberPlayerBrightnessStateHash() =>
+    r'15afe918ff681f63e174194cc1d7ed17a120f74b';
+
+abstract class _$RememberPlayerBrightnessState extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+/// The player's fit, kept from one episode to the next (#996).
+
+@ProviderFor(PlayerVideoFitState)
+final playerVideoFitStateProvider = PlayerVideoFitStateProvider._();
+
+/// The player's fit, kept from one episode to the next (#996).
+final class PlayerVideoFitStateProvider
+    extends $NotifierProvider<PlayerVideoFitState, BoxFit> {
+  /// The player's fit, kept from one episode to the next (#996).
+  PlayerVideoFitStateProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'playerVideoFitStateProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$playerVideoFitStateHash();
+
+  @$internal
+  @override
+  PlayerVideoFitState create() => PlayerVideoFitState();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(BoxFit value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<BoxFit>(value),
+    );
+  }
+}
+
+String _$playerVideoFitStateHash() =>
+    r'6bd228dc5387da9ab38b52ad79b600839abf23ff';
+
+/// The player's fit, kept from one episode to the next (#996).
+
+abstract class _$PlayerVideoFitState extends $Notifier<BoxFit> {
+  BoxFit build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<BoxFit, BoxFit>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<BoxFit, BoxFit>,
+              BoxFit,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+/// Whether a subtitle track is turned on when an episode starts (#615).
+
+@ProviderFor(SubtitlesOnByDefaultState)
+final subtitlesOnByDefaultStateProvider = SubtitlesOnByDefaultStateProvider._();
+
+/// Whether a subtitle track is turned on when an episode starts (#615).
+final class SubtitlesOnByDefaultStateProvider
+    extends $NotifierProvider<SubtitlesOnByDefaultState, bool> {
+  /// Whether a subtitle track is turned on when an episode starts (#615).
+  SubtitlesOnByDefaultStateProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'subtitlesOnByDefaultStateProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$subtitlesOnByDefaultStateHash();
+
+  @$internal
+  @override
+  SubtitlesOnByDefaultState create() => SubtitlesOnByDefaultState();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$subtitlesOnByDefaultStateHash() =>
+    r'e92b98b986361f0e95963d43ea2673eac52f0c6e';
+
+/// Whether a subtitle track is turned on when an episode starts (#615).
+
+abstract class _$SubtitlesOnByDefaultState extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
   }
 }

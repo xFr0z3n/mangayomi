@@ -49,7 +49,7 @@ final class DownloadedChapterIdsProvider
 }
 
 String _$downloadedChapterIdsHash() =>
-    r'ff409df987e776e8c150e541c5aa48b1d5f9e9b9';
+    r'65a652cb30e42b989e2e67eb9dae24992afe26f1';
 
 /// Pre-fetches all manga IDs that have at least one tracking entry reactively.
 
@@ -88,7 +88,7 @@ final class TrackedMangaIdsProvider
   }
 }
 
-String _$trackedMangaIdsHash() => r'7cdf57492a70d233907d543f3c1aadeca5dfad50';
+String _$trackedMangaIdsHash() => r'902bbf011185a59ee10f175efaa4e96c6610e46b';
 
 /// Filters and sorts a list of [Manga] based on library filter/sort settings.
 
@@ -116,6 +116,7 @@ final class FilteredLibraryMangaProvider
       String searchQuery,
       bool ignoreFiltersOnSearch,
       List<String> sourceIds,
+      Settings settings,
     })
     super.argument,
   }) : super(
@@ -158,6 +159,7 @@ final class FilteredLibraryMangaProvider
               String searchQuery,
               bool ignoreFiltersOnSearch,
               List<String> sourceIds,
+              Settings settings,
             });
     return filteredLibraryManga(
       ref,
@@ -173,6 +175,7 @@ final class FilteredLibraryMangaProvider
       searchQuery: argument.searchQuery,
       ignoreFiltersOnSearch: argument.ignoreFiltersOnSearch,
       sourceIds: argument.sourceIds,
+      settings: argument.settings,
     );
   }
 
@@ -196,7 +199,7 @@ final class FilteredLibraryMangaProvider
 }
 
 String _$filteredLibraryMangaHash() =>
-    r'aae368f1bab8345d88cf773539a969f8f14cd2fc';
+    r'87a6b93ecdae5f9ace5ac445e2d01dff00565cd2';
 
 /// Filters and sorts a list of [Manga] based on library filter/sort settings.
 
@@ -217,6 +220,7 @@ final class FilteredLibraryMangaFamily extends $Family
             String searchQuery,
             bool ignoreFiltersOnSearch,
             List<String> sourceIds,
+            Settings settings,
           })
         > {
   FilteredLibraryMangaFamily._()
@@ -243,6 +247,7 @@ final class FilteredLibraryMangaFamily extends $Family
     required String searchQuery,
     required bool ignoreFiltersOnSearch,
     required List<String> sourceIds,
+    required Settings settings,
   }) => FilteredLibraryMangaProvider._(
     argument: (
       data: data,
@@ -257,6 +262,7 @@ final class FilteredLibraryMangaFamily extends $Family
       searchQuery: searchQuery,
       ignoreFiltersOnSearch: ignoreFiltersOnSearch,
       sourceIds: sourceIds,
+      settings: settings,
     ),
     from: this,
   );

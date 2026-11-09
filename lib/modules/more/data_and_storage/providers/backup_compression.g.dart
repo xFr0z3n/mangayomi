@@ -42,13 +42,13 @@ final class BackupCompressionLevelProvider
 }
 
 String _$backupCompressionLevelHash() =>
-    r'311d8f25c01375dc9dceef0ac9ca980c0a5cdb07';
+    r'5d680a749ac9f017bddcd30d244182e85a529614';
 
 abstract class _$BackupCompressionLevel extends $Notifier<int> {
   int build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -58,6 +58,6 @@ abstract class _$BackupCompressionLevel extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

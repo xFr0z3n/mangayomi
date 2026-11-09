@@ -43,13 +43,13 @@ final class TotalChapterCacheSizeStateProvider
 }
 
 String _$totalChapterCacheSizeStateHash() =>
-    r'fdecfd853bcd1355217fcef9590d6c69fbd92ce4';
+    r'6152149053518123c6a420693fac58d8d0981c5b';
 
 abstract class _$TotalChapterCacheSizeState extends $Notifier<String> {
   String build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -59,7 +59,7 @@ abstract class _$TotalChapterCacheSizeState extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -99,13 +99,13 @@ final class ClearChapterCacheOnAppLaunchStateProvider
 }
 
 String _$clearChapterCacheOnAppLaunchStateHash() =>
-    r'1decadd07db6946a1daaa4ae90e0f082555fab78';
+    r'5afdfb0a33698f8fe9deb2df50cb979e1055282d';
 
 abstract class _$ClearChapterCacheOnAppLaunchState extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -115,6 +115,6 @@ abstract class _$ClearChapterCacheOnAppLaunchState extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
